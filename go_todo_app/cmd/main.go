@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"text/tabwriter"
 )
 
 var tasks []TodoItem
@@ -87,11 +88,19 @@ outer:
 }
 
 func listTasks() {
-	fmt.Printf("ID  Description  Status\n")
+	w := tabwriter.NewWriter(os.Stdout, 4, 4, 0, ' ', ' ')
 	for _, v := range tasks {
-		fmt.Printf("%v  %v  %v\n", v.ID, v.Task, v.Status)
+		fmt.Fprintln(w, v.ID, "\t", v.Task, "\t", v.Status)
 	}
+	w.Flush()
 }
+
+// func listTasks() {
+// 	fmt.Printf("ID  Description  Status\n")
+// 	for _, v := range tasks {
+// 		fmt.Printf("%v  %v  %v\n", v.ID, v.Task, v.Status)
+// 	}
+// }
 
 func addTask(task string) {
 	id := uint8(rand.Intn(100000))
