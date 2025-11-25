@@ -1,71 +1,85 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strconv"
-	"strings"
 )
 
 var tasks []TodoItem
 
 func main() {
-	command := os.Args[1]
-
 	loadedTasks, err := LoadTasks()
-	if err != nil {
-		panic(err)
-	}
 	tasks = loadedTasks
+	var command string
+	fmt.Println("")
+	fmt.Println("----------------------------")
+	fmt.Println("Welcome to GOTODO!")
+	fmt.Println("What would you like to do?")
+	fmt.Println("Available commands: list | add | complete | delete | exit")
+	fmt.Println("----------------------------")
 
-	switch command {
-	case "list":
-		listTasks()
-	case "add":
-		if len(os.Args) < 3 {
-			fmt.Println("Error!")
-			fmt.Println("Usage: main.go add <task description>")
-			break
+outer:
+	for {
+		fmt.Println("")
+		fmt.Print("Your command: ")
+		fmt.Scanln(&command)
+
+		if err != nil {
+			panic(err)
 		}
 
-		var sb strings.Builder
-		for i := 2; i < len(os.Args); i++ {
-			if i > 2 {
-				sb.WriteString(" ")
+		switch command {
+		case "list":
+			listTasks()
+		case "add":
+			fmt.Print("Task description: ")
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			err := scanner.Err()
+			desc := scanner.Text()
+			if err != nil {
+				log.Fatal(err)
 			}
-			sb.WriteString(os.Args[i])
-		}
 
-		task := sb.String()
-		addTask(task)
-		fmt.Println(tasks)
-	case "complete":
-		if (len(os.Args)) != 3 {
-			fmt.Println("Error!")
-			fmt.Println("Usage: main.go complete <taskId>")
-		}
-		id, err := strconv.Atoi(os.Args[2])
-		if err != nil {
-			println(err.Error())
-			return
-		}
+			addTask(desc)
+		case "complete":
+			var idStr string
+			fmt.Print("Enter task id to mark complete: ")
+			fmt.Scanln(&idStr)
 
-		completeTask(uint8(id))
-	case "delete":
-		if (len(os.Args)) != 3 {
-			fmt.Println("Error!")
-			fmt.Println("Usage: main.go delete <taskId>")
-		}
-		id, err := strconv.Atoi(os.Args[2])
-		if err != nil {
-			println(err.Error())
-			return
-		}
-		deleteTask(uint8(id))
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				println(err.Error())
+				return
+			}
 
-	default:
-		fmt.Println("Usage: main.go list | add | complete")
+			completeTask(uint8(id))
+		case "delete":
+			var idStr string
+			fmt.Print("Enter task id to delete: ")
+			fmt.Scanln(&idStr)
+
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				println(err.Error())
+				return
+			}
+			deleteTask(uint8(id))
+		case "exit":
+			fmt.Println("")
+			fmt.Println("Exiting GOTODO")
+			fmt.Println("See you soon!")
+			break outer
+		default:
+			fmt.Println("")
+			fmt.Println("Unkwon command!")
+			fmt.Println("Available commands: list | add | complete | delete | exit")
+			fmt.Println("")
+		}
 	}
 
 	// save tasks before exiting
