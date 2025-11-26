@@ -11,6 +11,7 @@ func main() {
 	router.HandleFunc("POST /add", HandleAdd)
 	router.HandleFunc("POST /subtract", HandleSubtract)
 	router.HandleFunc("POST /multiply", HandleMultiply)
+	router.HandleFunc("POST /divide", HandleDivide)
 
 	server := http.Server{
 		Addr:    ":3000",
