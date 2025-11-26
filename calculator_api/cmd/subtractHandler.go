@@ -24,12 +24,12 @@ func HandleSubtract(w http.ResponseWriter, r *http.Request) {
 
 	result := body.Number1 - body.Number2
 
-	resBody, err := json.Marshal(struct {
+	resBody, jsonErr := json.Marshal(struct {
 		Result int `json:"result"`
 	}{Result: result})
-	if err != nil {
+	if jsonErr != nil {
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)
-		log.Println(err.Error())
+		log.Println(jsonErr.Error())
 		return
 	}
 

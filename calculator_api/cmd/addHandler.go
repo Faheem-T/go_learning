@@ -31,10 +31,10 @@ func HandleAdd(w http.ResponseWriter, r *http.Request) {
 		Result int `json:"result"`
 	}{Result: result}
 
-	resBody, err := json.Marshal(response)
-	if err != nil {
+	resBody, jsonErr := json.Marshal(response)
+	if jsonErr != nil {
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)
-		log.Println(err.Error())
+		log.Println(jsonErr.Error())
 		return
 	}
 
