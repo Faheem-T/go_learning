@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -22,11 +21,27 @@ func HandleAdd(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		http.Error(w, "Invalid JSON ", http.StatusBadRequest)
-		log.Print(err.Error())
+		log.Println(err.Error())
 		return
 	}
 
 	result := body.Number1 + body.Number2
 
-	fmt.Fprintf(w, "Result %v", result)
+	response := struct {
+		Result int `json:"result"`
+	}{Result: result}
+
+	resBody, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		log.Println(err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, writeErr := w.Write(resBody)
+	if writeErr != nil {
+		log.Println(writeErr.Error())
+	}
 }
