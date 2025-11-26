@@ -9,6 +9,7 @@ func main() {
 	router := http.NewServeMux()
 
 	router.HandleFunc("POST /add", HandleAdd)
+	router.HandleFunc("POST /subtract", HandleSubtract)
 
 	server := http.Server{
 		Addr:    ":3000",
