@@ -1,0 +1,21 @@
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+	router := http.NewServeMux()
+
+	router.HandleFunc("POST /add", HandleAdd)
+
+	server := http.Server{
+		Addr:    ":3000",
+		Handler: router,
+	}
+
+	log.Println("Listening on port :3000")
+
+	server.ListenAndServe()
+}
